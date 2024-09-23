@@ -18,22 +18,26 @@ import { OrderDetailsModule } from './order-details/order-details.module';
 import { OrderDetail } from './order-details/entities/order-detail.entity';
 import { PaymentModule } from './payment/payment.module';
 import { Payment } from './payment/entities/payment.entity';
+import { AppDataSource } from './data-source';
+
 
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: 'Atharva@123',
-      database: 'connection',
-      entities: [Location,User,Employee,Customer,Car,
-        OrderDetail,CarMantainance,Payment
-        ],
-      synchronize: true,
-    }),
+    // TypeOrmModule.forRoot({
+    //   type: 'mysql',
+    //   host: 'localhost',
+    //   port: 3306,
+    //   username: 'root',
+    //   password: 'Atharva@123',
+    //   database: 'connection',
+    //   entities: [Location,User,Employee,Customer,Car,
+    //     OrderDetail,CarMantainance,Payment
+    //     ],
+    //   synchronize: false,
+    // }),
+    // TypeOrmModule.forRoot(AppDataSource),
+    TypeOrmModule.forRoot(AppDataSource.options),
     LocationModule,
     UserModule,
     EmployeeModule,
@@ -46,4 +50,14 @@ import { Payment } from './payment/entities/payment.entity';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  constructor() {
+    AppDataSource.initialize()
+      .then(() => {
+        console.log('Data Source has been initialized!');
+      })
+      .catch((err) => {
+        console.error('Error during Data Source initialization:', err);
+      });
+  }
+}

@@ -19,6 +19,7 @@ export class LocationService {
     if (!location) {
       throw new NotFoundException(`Locations not found`);
     }
+    
     return location
   }
 
