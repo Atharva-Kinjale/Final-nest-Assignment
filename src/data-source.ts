@@ -43,9 +43,14 @@ export const AppDataSource = new DataSource({
 //     logging: false
   logging: false,
   entities: [__dirname + '/**/*.entity{.ts,.js}'],  
-  migrations: [
-    './migrations/**.ts'
+//   migrations: [
+//     './migrations/**.ts'
     
-],
+// ],
+
+// migartion with 2 file s1 for create table and one for adding foreign keys
+// migrations: [
+//   './SinglMmigrations/**.ts'
+// ],
   subscribers: [],
 });

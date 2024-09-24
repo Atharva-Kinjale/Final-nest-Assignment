@@ -1,49 +1,23 @@
 import { MigrationInterface, QueryRunner, Table, TableForeignKey } from "typeorm";
 
-export class User1727099862476 implements MigrationInterface {
+export class Employee1727159423558 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.createTable(
             new Table({
-                name: "users",
+                name: "employee",
                 columns: [
                     {
-                        name: "user_Id",
+                        name: "employee_Id",
                         type: "int",
                         isPrimary: true,
                         isGenerated: true,
                         generationStrategy: "increment",
                     },
                     {
-                        name: "F_Name",
-                        type: "varchar",
-                        isNullable: false,
-                    },
-                    {
-                        name: "L_Name",
-                        type: "varchar",
-                        isNullable: false,
-                    },
-                    {
-                        name: "Email",
-                        type: "varchar",
-                        isUnique: true,
-                        isNullable: false,
-                    },
-                    {
-                        name: "Contact_No",
-                        type: "varchar",
-                        isNullable: false,
-                    },
-                    {
-                        name: "Gender",
-                        type: "enum",
-                        enum: ['male', 'female', 'other'],
-                        isNullable: false,
-                    },
-                    {
-                        name: "pinCode",
+                        name: "user_Id",
                         type: "int",
+                        isUnique: true,
                         isNullable: false,
                     },
                     {
@@ -73,34 +47,35 @@ export class User1727099862476 implements MigrationInterface {
                         name: "DeletedAt",
                         type: "timestamp",
                         isNullable: true,
-                    }
+                    },
                 ],
             })
         );
 
-        // Add foreign key for the Location (pincode) relationship
+        // Foreign key for user_Id referencing users table
         await queryRunner.createForeignKey(
-            "users",
+            "employee",
             new TableForeignKey({
-                columnNames: ["pinCode"],
-                referencedColumnNames: ["pincode"],
-                referencedTableName: "locations",
+                columnNames: ["user_Id"],
+                referencedColumnNames: ["user_Id"],
+                referencedTableName: "users",
                 onDelete: "CASCADE",
+                onUpdate: "CASCADE",
             })
         );
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
         // Drop foreign key first
-        const table = await queryRunner.getTable("users");
+        const table = await queryRunner.getTable("employee");
         const foreignKey = table.foreignKeys.find(
-            (fk) => fk.columnNames.indexOf("pinCode") !== -1
+            (fk) => fk.columnNames.indexOf("user_Id") !== -1
         );
-        await queryRunner.dropForeignKey("users", foreignKey);
+        await queryRunner.dropForeignKey("employee", foreignKey);
 
-        // Then drop the users table
-        await queryRunner.dropTable("users");
-    
+        // Then drop the employee table
+        await queryRunner.dropTable("employee");
+
     }
 
 }

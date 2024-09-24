@@ -19,7 +19,7 @@ export class CarMantainanceService {
   }
 
   async findOne(id: number) {
-   const service=await this.serrviceRepo.findOne({where:{service_Id:id}, relations: ['loc','emp'] });
+   const service=await this.serrviceRepo.findOne({where:{service_Id:id}, relations: ['loc'] });
    if (!service) {
     throw new NotFoundException(`Employee with ID ${id} not found`);
   }

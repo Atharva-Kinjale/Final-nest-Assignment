@@ -1,50 +1,49 @@
 import { MigrationInterface, QueryRunner, Table, TableForeignKey } from "typeorm";
 
-export class User1727099862476 implements MigrationInterface {
+export class Car1727159575926 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.createTable(
             new Table({
-                name: "users",
+                name: "car",
                 columns: [
                     {
-                        name: "user_Id",
+                        name: "car_Id",
                         type: "int",
                         isPrimary: true,
                         isGenerated: true,
                         generationStrategy: "increment",
                     },
                     {
-                        name: "F_Name",
-                        type: "varchar",
-                        isNullable: false,
-                    },
-                    {
-                        name: "L_Name",
-                        type: "varchar",
-                        isNullable: false,
-                    },
-                    {
-                        name: "Email",
+                        name: "model",
                         type: "varchar",
                         isUnique: true,
                         isNullable: false,
                     },
                     {
-                        name: "Contact_No",
-                        type: "varchar",
+                        name: "price",
+                        type: "decimal",
                         isNullable: false,
                     },
                     {
-                        name: "Gender",
-                        type: "enum",
-                        enum: ['male', 'female', 'other'],
+                        name: "manufactureYear",
+                        type: "date",
                         isNullable: false,
                     },
                     {
-                        name: "pinCode",
+                        name: "mileage",
+                        type: "decimal",
+                        isNullable: true,
+                    },
+                    {
+                        name: "location",
                         type: "int",
                         isNullable: false,
+                    },
+                    {
+                        name: "isAvailable",
+                        type: "boolean",
+                        default: false,
                     },
                     {
                         name: "CreatedAt",
@@ -73,34 +72,34 @@ export class User1727099862476 implements MigrationInterface {
                         name: "DeletedAt",
                         type: "timestamp",
                         isNullable: true,
-                    }
+                    },
                 ],
             })
         );
 
-        // Add foreign key for the Location (pincode) relationship
+        // Foreign key for location referencing the locations table
         await queryRunner.createForeignKey(
-            "users",
+            "car",
             new TableForeignKey({
-                columnNames: ["pinCode"],
+                columnNames: ["location"],
                 referencedColumnNames: ["pincode"],
                 referencedTableName: "locations",
                 onDelete: "CASCADE",
+                onUpdate: "CASCADE",
             })
         );
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
         // Drop foreign key first
-        const table = await queryRunner.getTable("users");
+        const table = await queryRunner.getTable("car");
         const foreignKey = table.foreignKeys.find(
-            (fk) => fk.columnNames.indexOf("pinCode") !== -1
+            (fk) => fk.columnNames.indexOf("location") !== -1
         );
-        await queryRunner.dropForeignKey("users", foreignKey);
+        await queryRunner.dropForeignKey("car", foreignKey);
 
-        // Then drop the users table
-        await queryRunner.dropTable("users");
-    
+        // Then drop the car table
+        await queryRunner.dropTable("car");
     }
 
 }

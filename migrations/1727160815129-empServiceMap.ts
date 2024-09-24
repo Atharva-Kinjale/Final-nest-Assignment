@@ -1,48 +1,27 @@
 import { MigrationInterface, QueryRunner, Table, TableForeignKey } from "typeorm";
 
-export class User1727099862476 implements MigrationInterface {
+export class EmpServiceMap1727160815129 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
+        // Create the employeeServiceMap table
         await queryRunner.createTable(
             new Table({
-                name: "users",
+                name: "employeeServiceMap",
                 columns: [
                     {
-                        name: "user_Id",
+                        name: "id",
                         type: "int",
                         isPrimary: true,
                         isGenerated: true,
                         generationStrategy: "increment",
                     },
                     {
-                        name: "F_Name",
-                        type: "varchar",
+                        name: "employee_Id",
+                        type: "int",
                         isNullable: false,
                     },
                     {
-                        name: "L_Name",
-                        type: "varchar",
-                        isNullable: false,
-                    },
-                    {
-                        name: "Email",
-                        type: "varchar",
-                        isUnique: true,
-                        isNullable: false,
-                    },
-                    {
-                        name: "Contact_No",
-                        type: "varchar",
-                        isNullable: false,
-                    },
-                    {
-                        name: "Gender",
-                        type: "enum",
-                        enum: ['male', 'female', 'other'],
-                        isNullable: false,
-                    },
-                    {
-                        name: "pinCode",
+                        name: "service_Id",
                         type: "int",
                         isNullable: false,
                     },
@@ -55,7 +34,6 @@ export class User1727099862476 implements MigrationInterface {
                         name: "CreatedBy",
                         type: "int",
                         isNullable: true,
-                        default: null,
                     },
                     {
                         name: "UpdatedAt",
@@ -67,40 +45,53 @@ export class User1727099862476 implements MigrationInterface {
                         name: "UpdatedBy",
                         type: "int",
                         isNullable: true,
-                        default: null,
                     },
                     {
                         name: "DeletedAt",
                         type: "timestamp",
                         isNullable: true,
-                    }
+                    },
                 ],
             })
         );
 
-        // Add foreign key for the Location (pincode) relationship
+        // Create foreign key relationship with Employee
         await queryRunner.createForeignKey(
-            "users",
+            "employeeServiceMap",
             new TableForeignKey({
-                columnNames: ["pinCode"],
-                referencedColumnNames: ["pincode"],
-                referencedTableName: "locations",
+                columnNames: ["employee_Id"],
+                referencedTableName: "employee",
+                referencedColumnNames: ["employee_Id"],
                 onDelete: "CASCADE",
+                onUpdate: "CASCADE",
+            })
+        );
+
+        // Create foreign key relationship with CarMantainance
+        await queryRunner.createForeignKey(
+            "employeeServiceMap",
+            new TableForeignKey({
+                columnNames: ["service_Id"],
+                referencedTableName: "carMaintainance",
+                referencedColumnNames: ["service_Id"],
+                onDelete: "CASCADE",
+                onUpdate: "CASCADE",
             })
         );
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        // Drop foreign key first
-        const table = await queryRunner.getTable("users");
-        const foreignKey = table.foreignKeys.find(
-            (fk) => fk.columnNames.indexOf("pinCode") !== -1
-        );
-        await queryRunner.dropForeignKey("users", foreignKey);
+        // Drop foreign keys
+        const table = await queryRunner.getTable("employeeServiceMap");
+        const foreignKeys = table.foreignKeys;
 
-        // Then drop the users table
-        await queryRunner.dropTable("users");
-    
+        for (const foreignKey of foreignKeys) {
+            await queryRunner.dropForeignKey("employeeServiceMap", foreignKey);
+        }
+
+        // Drop the employeeServiceMap table
+        await queryRunner.dropTable("employeeServiceMap");
+
     }
 
 }

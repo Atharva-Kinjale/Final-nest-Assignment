@@ -1,50 +1,34 @@
 import { MigrationInterface, QueryRunner, Table, TableForeignKey } from "typeorm";
 
-export class User1727099862476 implements MigrationInterface {
+export class Payment1727160436933 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
+        // Create the payment table
         await queryRunner.createTable(
             new Table({
-                name: "users",
+                name: "payment",
                 columns: [
                     {
-                        name: "user_Id",
+                        name: "payment_Id",
                         type: "int",
                         isPrimary: true,
                         isGenerated: true,
                         generationStrategy: "increment",
                     },
                     {
-                        name: "F_Name",
-                        type: "varchar",
-                        isNullable: false,
-                    },
-                    {
-                        name: "L_Name",
-                        type: "varchar",
-                        isNullable: false,
-                    },
-                    {
-                        name: "Email",
-                        type: "varchar",
-                        isUnique: true,
-                        isNullable: false,
-                    },
-                    {
-                        name: "Contact_No",
-                        type: "varchar",
-                        isNullable: false,
-                    },
-                    {
-                        name: "Gender",
-                        type: "enum",
-                        enum: ['male', 'female', 'other'],
-                        isNullable: false,
-                    },
-                    {
-                        name: "pinCode",
+                        name: "order_Id",
                         type: "int",
                         isNullable: false,
+                    },
+                    {
+                        name: "paymentType",
+                        type: "enum",
+                        enum: ["cash", "online", "check", "loan"],
+                    },
+                    {
+                        name: "paymentStatus",
+                        type: "enum",
+                        enum: ["success", "processing", "failed"],
                     },
                     {
                         name: "CreatedAt",
@@ -55,7 +39,6 @@ export class User1727099862476 implements MigrationInterface {
                         name: "CreatedBy",
                         type: "int",
                         isNullable: true,
-                        default: null,
                     },
                     {
                         name: "UpdatedAt",
@@ -67,39 +50,40 @@ export class User1727099862476 implements MigrationInterface {
                         name: "UpdatedBy",
                         type: "int",
                         isNullable: true,
-                        default: null,
                     },
                     {
                         name: "DeletedAt",
                         type: "timestamp",
                         isNullable: true,
-                    }
+                    },
                 ],
             })
         );
 
-        // Add foreign key for the Location (pincode) relationship
+        // Create foreign key relationship with OrderDetail
         await queryRunner.createForeignKey(
-            "users",
+            "payment",
             new TableForeignKey({
-                columnNames: ["pinCode"],
-                referencedColumnNames: ["pincode"],
-                referencedTableName: "locations",
+                columnNames: ["order_Id"],
+                referencedTableName: "orderDetails",
+                referencedColumnNames: ["order_Id"],
                 onDelete: "CASCADE",
+                onUpdate: "CASCADE",
             })
         );
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        // Drop foreign key first
-        const table = await queryRunner.getTable("users");
-        const foreignKey = table.foreignKeys.find(
-            (fk) => fk.columnNames.indexOf("pinCode") !== -1
-        );
-        await queryRunner.dropForeignKey("users", foreignKey);
+        // Drop foreign keys
+        const table = await queryRunner.getTable("payment");
+        const foreignKeys = table.foreignKeys;
 
-        // Then drop the users table
-        await queryRunner.dropTable("users");
+        for (const foreignKey of foreignKeys) {
+            await queryRunner.dropForeignKey("payment", foreignKey);
+        }
+
+        // Drop the payment table
+        await queryRunner.dropTable("payment");
     
     }
 
