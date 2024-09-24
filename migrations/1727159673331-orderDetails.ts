@@ -18,19 +18,19 @@ export class OrderDetails1727159673331 implements MigrationInterface {
                         name: "employee_Id",
                         type: "int",
                         isNullable: false,
-                        isUnique: true,
+                        // isUnique: true,
                     },
                     {
                         name: "customer_Id",
                         type: "int",
                         isNullable: false,
-                        isUnique: true,
+                        // isUnique: true,
                     },
                     {
                         name: "car_Id",
                         type: "int",
                         isNullable: false,
-                        isUnique: true,
+                        // isUnique: true,
                     },
                     {
                         name: "amount",

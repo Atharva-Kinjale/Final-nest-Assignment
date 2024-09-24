@@ -38,7 +38,7 @@ export const AppDataSource = new DataSource({
     port: 3306,
     username: 'root',
     password: 'Atharva@123',
-    database: 'connection2',
+    database: 'connection3',
     synchronize: false, // Turn off sync when using migrations
 //     logging: false
   logging: false,

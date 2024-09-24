@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe, Query } from '@nestjs/common';
 import { LocationService } from './location.service';
 import { CreateLocationDto } from './dto/create-location.dto';
 import { UpdateLocationDto } from './dto/update-location.dto';
@@ -13,8 +13,10 @@ export class LocationController {
   }
 
   @Get()
-  findAll() {
-    return this.locationsService.findAll();
+  findAll(@Query()query:any) {
+    // console.log(query);
+    
+    return this.locationsService.findAll(query);
   }
 
   @Get(':pincode')
@@ -22,13 +24,13 @@ export class LocationController {
     return this.locationsService.findOne(+pincode);
   }
 
-  @Patch(':pincode')
-  update(@Param('pincode') pincode: string, @Body() updateLocationDto: UpdateLocationDto) {
-    return this.locationsService.update(+pincode, updateLocationDto);
-  }
+  // @Patch(':pincode')
+  // update(@Param('pincode') pincode: string, @Body() updateLocationDto: UpdateLocationDto) {
+  //   return this.locationsService.update(+pincode, updateLocationDto);
+  // }
 
-  @Delete(':pincode')
-  remove(@Param('pincode') pincode: string) {
-    return this.locationsService.remove(+pincode);
-  }
+  // @Delete(':pincode')
+  // remove(@Param('pincode') pincode: string) {
+  //   return this.locationsService.remove(+pincode);
+  // }
 }

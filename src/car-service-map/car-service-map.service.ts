@@ -28,6 +28,9 @@ export class CarServiceMapService {
 
   async update(id: number, updateCarServiceMapDto: UpdateCarServiceMapDto) {
     const carService = await this.findOne(id);
+    if (!carService) {
+      throw new NotFoundException(`CarService with ID ${id} not exist`);
+    }
     const entry=await this.carServicemapRepo.update(id,updateCarServiceMapDto)
     return carService;
   

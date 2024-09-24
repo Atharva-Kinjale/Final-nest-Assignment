@@ -10,13 +10,13 @@ export class OrderDetail {
     @PrimaryGeneratedColumn()
   order_Id: number;
 
-  @Column({nullable:false,unique:true,name:'employee_Id'})
+  @Column({nullable:false,name:'employee_Id'})
   employee_Id: number;
 
-  @Column({nullable:false,unique:true,name:'customer_Id'})
+  @Column({nullable:false,name:'customer_Id'})
   customer_Id: number;
 
-  @Column({nullable:false,unique:true,name:'car_Id'})
+  @Column({nullable:false,name:'car_Id'})
   car_Id: number;
 
   @Column({ type: 'decimal' })
