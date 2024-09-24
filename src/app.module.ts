@@ -19,6 +19,8 @@ import { OrderDetail } from './order-details/entities/order-detail.entity';
 import { PaymentModule } from './payment/payment.module';
 import { Payment } from './payment/entities/payment.entity';
 import { AppDataSource } from './data-source';
+import { EmployeeServiceMapModule } from './employee-service-map/employee-service-map.module';
+import { CarServiceMapModule } from './car-service-map/car-service-map.module';
 
 
 
@@ -46,6 +48,8 @@ import { AppDataSource } from './data-source';
     CarModule,
     OrderDetailsModule,
     PaymentModule,
+    EmployeeServiceMapModule,
+    CarServiceMapModule,
   ],
   controllers: [AppController],
   providers: [AppService],

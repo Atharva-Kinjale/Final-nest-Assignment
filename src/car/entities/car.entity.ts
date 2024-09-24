@@ -1,4 +1,5 @@
 import { CarMantainance } from "src/car-mantainance/entities/car-mantainance.entity";
+import { CarServiceMap } from "src/car-service-map/entities/car-service-map.entity";
 import { Location } from "src/location/entities/location.entity";
 import { OrderDetail } from "src/order-details/entities/order-detail.entity";
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from "typeorm";
@@ -47,7 +48,11 @@ export class Car {
     @OneToMany(()=>OrderDetail,(order)=>order.emp)
     orderDetails:OrderDetail
 
-    @ManyToMany(()=>CarMantainance , (service)=>service.car)
-    // @JoinTable()
-    service:CarMantainance
+    @OneToMany(()=>CarServiceMap,(carservicemap)=>carservicemap.car)
+    @JoinColumn({name:'car_Id'})
+    carServiceMap:CarServiceMap
+
+    // @ManyToMany(()=>CarMantainance , (service)=>service.car)
+    // // @JoinTable()
+    // service:CarMantainance
 }

@@ -1,8 +1,9 @@
 // import { CarMantainance } from "src/car-mantainance/entities/car-mantainance.entity";
 import { CarMantainance } from "src/car-mantainance/entities/car-mantainance.entity";
+import { EmployeeServiceMap } from "src/employee-service-map/entities/employee-service-map.entity";
 import { OrderDetail } from "src/order-details/entities/order-detail.entity";
 import { User } from "src/user/entities/user.entity";
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity({name:"employee"})
 export class Employee {
@@ -34,11 +35,14 @@ export class Employee {
     @JoinColumn({name:'user_Id'})
     user:User;
 
-    @ManyToMany(()=>CarMantainance , (service)=>service.emp)
-    // @JoinTable()
-    service:CarMantainance
+    // @ManyToMany(()=>CarMantainance , (service)=>service.emp)
+    // // @JoinTable()
+    // service:CarMantainance
 
     @OneToMany(()=>OrderDetail,(order)=>order.emp)
     orderDetails:OrderDetail
 
+    @OneToMany(()=>EmployeeServiceMap,(empSerMap)=>empSerMap.emp)
+    @JoinColumn({name:'employee_Id'})
+    empServiceMap :EmployeeServiceMap
 }

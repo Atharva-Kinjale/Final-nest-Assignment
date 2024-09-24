@@ -29,7 +29,7 @@
 // };
 
 
-import { Location1727097036816 } from 'migrations/1727097036816-location';
+// import { Location1727097036816 } from 'migrations/1727097036816-location';
 import { DataSource } from 'typeorm';
 
 export const AppDataSource = new DataSource({

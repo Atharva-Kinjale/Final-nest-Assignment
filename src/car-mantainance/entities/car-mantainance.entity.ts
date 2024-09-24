@@ -1,7 +1,9 @@
+import { CarServiceMap } from "src/car-service-map/entities/car-service-map.entity";
 import { Car } from "src/car/entities/car.entity";
+import { EmployeeServiceMap } from "src/employee-service-map/entities/employee-service-map.entity";
 import { Employee } from "src/employee/entities/employee.entity";
 import { Location } from "src/location/entities/location.entity";
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity({name:"carMaintainance"})
 export class CarMantainance {
@@ -22,6 +24,7 @@ export class CarMantainance {
 
     @Column({nullable:false ,name:'pincode'})
     location: number;
+
     @CreateDateColumn()
     CreatedAt: Date; 
 
@@ -40,12 +43,25 @@ export class CarMantainance {
     @ManyToOne(() => Location, (location) => location.services)
     @JoinColumn({name:"pincode"},)
     loc: Location;
+    
+    @OneToMany(()=>EmployeeServiceMap,(empSerMap)=>empSerMap.service)
+    @JoinColumn({name:'service_Id'})
+    empServiceMap :EmployeeServiceMap
 
-    @ManyToMany(()=>Employee , (emp)=>emp.service)
-    @JoinTable()
-    emp:Employee
+    @OneToMany(()=>CarServiceMap,(empSerMap)=>empSerMap.service)
+    @JoinColumn({name:'service_Id'})
+    carServiceMap :CarServiceMap
 
-    @ManyToMany(()=>Car , (car)=>car.service)
-    @JoinTable()
-    car:Car
+    // @ManyToMany(()=>Employee , (emp)=>emp.service)
+    // @JoinTable(
+    //     {name:'employeeServiceMap',
+    //     joinColumn:{name:'service_Id'},
+    //     inverseJoinColumn:{name:'employee_Id'}},
+    // )
+    // emp:Employee
+
+    // @ManyToMany(()=>Car , (car)=>car.service)
+    // @JoinTable()
+    // car:Car
+
 }

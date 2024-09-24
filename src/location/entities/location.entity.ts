@@ -4,7 +4,7 @@ import { CarMantainance } from "src/car-mantainance/entities/car-mantainance.ent
 import { Car } from "src/car/entities/car.entity";
 import { OrderDetail } from "src/order-details/entities/order-detail.entity";
 import { User } from "src/user/entities/user.entity";
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, OneToMany, PrimaryColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, JoinTable, OneToMany, PrimaryColumn, UpdateDateColumn } from "typeorm";
 
 @Entity("locations")
 export class Location {
