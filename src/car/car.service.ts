@@ -10,7 +10,8 @@ import { Repository } from 'typeorm';
 export class CarService extends BaseService<Car,CreateCarDto,UpdateCarDto> {
   
   constructor(@InjectRepository(Car) private readonly repo:Repository<Car> ){
-    super(repo,"car_Id",['loc'])
+    // super(repo,"car_Id",['loc'])
+    super(repo,"car_Id",['loc','orderDetails'])
     
   }
 }

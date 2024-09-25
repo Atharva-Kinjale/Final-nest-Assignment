@@ -19,6 +19,13 @@ export class LocationController {
     return this.locationsService.findAll(query);
   }
 
+  @Get('/details')
+  findAllDetails(@Query()query:any) {
+    // console.log(query);
+    
+    return this.locationsService.findAllDetails(query);
+  }
+
   @Get(':pincode')
   findOne(@Param('pincode') pincode: string) {
     return this.locationsService.findOne(+pincode);

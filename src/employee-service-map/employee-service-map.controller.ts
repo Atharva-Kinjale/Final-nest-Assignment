@@ -20,6 +20,12 @@ export class EmployeeServiceMapController {
     return this.employeeServiceMapService.findAll(query);
   }
 
+  
+  @Get('/details')
+  findAllDetails(@Query() query:any) {
+    return this.employeeServiceMapService.findAllDetails(query);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.employeeServiceMapService.findOne(+id);

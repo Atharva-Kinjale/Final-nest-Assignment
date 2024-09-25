@@ -1,4 +1,4 @@
-import { DeepPartial, Repository } from 'typeorm';
+import { DeepPartial, getRepository, Repository } from 'typeorm';
 import {
   BadRequestException,
   Injectable,
@@ -19,12 +19,39 @@ export class BaseService<T, createDTO extends DeepPartial<T>,updateDTO extends Q
       typeof this.repository.target === 'function'
         ? this.repository.target.name
         : this.repository.target;
-    // console.log(this.repository.target);
+    console.log(this.repository);
 
     return EntityName as string;
   }
 
   async findAll(query): Promise<T[]> {
+    const Features = new APIFeatures(query,this.repository);
+    console.log("testing ",Features.filtering());
+    
+    // console.log(this.repository.metadata.columns.map(column => column.propertyName));
+    // Features.checkColumnNames();
+    let data;
+    
+  //  try {
+     data = await this.repository.find({
+      where: Features.filtering(),
+      order: Features.Sorting(),
+      select: Features.fieldLimit(),
+      skip: Features.pagination().skip,
+      take: Features.pagination().take,
+      // relations:this.relations
+    });
+  //  } catch (error) {
+  //   throw new NotFoundException("Bad Request");
+  //  }
+    if (!data) {
+      throw new NotFoundException(`${this.getEntityname()} not found`);
+    }
+    // this.getEntityname();
+    return data;
+  }
+  
+  async findAllDetails(query): Promise<T[]> {
     const Features = new APIFeatures(query);
     // console.log("testing ",Features.filtering());
   
@@ -39,7 +66,7 @@ export class BaseService<T, createDTO extends DeepPartial<T>,updateDTO extends Q
     if (!data) {
       throw new NotFoundException(`${this.getEntityname()} not found`);
     }
-    this.getEntityname();
+    // this.getEntityname();
     return data;
   }
 

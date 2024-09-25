@@ -31,5 +31,5 @@ DeletedAt: Date;
 @JoinColumn({name:'user_Id'})
   user:User;
 
-@OneToMany(()=>OrderDetail,(order)=>order.emp)  orderDetails:OrderDetail
+@OneToMany(()=>OrderDetail,(order)=>order.cust)  orderDetails:OrderDetail
 }

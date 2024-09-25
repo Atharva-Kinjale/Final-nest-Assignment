@@ -19,6 +19,11 @@ export class EmployeeController {
     return this.employeeService.findAll(query);
   }
 
+  @Get('/details')
+  findAllDetails(@Query() query:any) {
+    return this.employeeService.findAllDetails(query);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.employeeService.findOne(+id);

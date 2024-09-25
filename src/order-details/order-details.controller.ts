@@ -19,6 +19,11 @@ export class OrderDetailsController {
     return this.orderDetailsService.findAll(query);
   }
 
+  @Get('/details')
+  findAllDetails(@Query() query:any) {
+    return this.orderDetailsService.findAllDetails(query);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.orderDetailsService.findOne(+id);

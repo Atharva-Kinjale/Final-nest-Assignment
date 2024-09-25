@@ -9,8 +9,9 @@ import { UpdateLocationDto } from "./dto/update-location.dto";
 export class LocationService extends BaseService<Location,CreateLocationDto,UpdateLocationDto> {
   
   constructor(@InjectRepository(Location) private readonly repo:Repository<Location> ){
-    super(repo,"pincode",[])
+    super(repo,"pincode",['users','services','car','orderDetails'])
   }
+  
 }
 
 

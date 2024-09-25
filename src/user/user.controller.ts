@@ -1,8 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus, Query, Req } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { query } from 'express';
+import { find } from 'rxjs';
+import { request } from 'http';
 
 @Controller('user')
 export class UserController {
@@ -13,11 +15,21 @@ export class UserController {
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
-
+  
   @Get()
-  findAll(@Query() query:any) {
+  findAll(@Query() query:any,@Req() request:Request) {
+    console.log(request.url);
+    
     return this.userService.findAll(query);
   }
+
+  @Get('/details')
+  findAllDetails(@Query() query:any,@Req() request:Request) {
+    console.log(request.url);
+    
+    return this.userService.findAllDetails(query);
+  }
+
 
   @Get(':id')
   findOne(@Param('id') id: string) {
@@ -33,5 +45,18 @@ export class UserController {
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: string) {
     return this.userService.remove(+id);
+  }
+  
+  @Get(":id/location/:pincode")
+  find(@Param('id',) id: string,@Param('pincode')pincode:string){
+    return this.userService.CustomFind(+id,+pincode)
+
+  }
+  @Get()
+  find1(@Req() request:Request){
+    console.log(request);
+    
+    return request
+
   }
 }

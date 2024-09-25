@@ -12,7 +12,7 @@ import { BaseService } from 'src/BaseService';
 export class EmployeeService extends BaseService<Employee,CreateEmployeeDto,UpdateEmployeeDto> {
   
   constructor(@InjectRepository(Employee) private readonly repo:Repository<Employee> ){
-    super(repo,"employee_Id", ['user'])
+    super(repo,"employee_Id", ['user','orderDetails'])
   }
 }
 // ----------------------------------------------------------------------------------------------------------------

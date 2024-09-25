@@ -13,7 +13,9 @@ import { BaseService } from 'src/BaseService';
 export class CustomerService extends BaseService<Customer,CreateCustomerDto,UpdateCustomerDto> {
   
   constructor(@InjectRepository(Customer) private readonly repo:Repository<Customer> ){
-    super(repo,"customer_Id", ['user'])
+    // super(repo,"customer_Id", ['user'])
+    super(repo,"customer_Id", ['user','orderDetails'])
+
   }
 }
 // ----------------------------------------------------------------------------------------------------------------

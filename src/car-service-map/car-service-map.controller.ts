@@ -19,6 +19,12 @@ export class CarServiceMapController {
     return this.carServiceMapService.findAll(query);
   }
 
+  
+  @Get('/details')
+  findAllDetails(@Query() query:any) {
+    return this.carServiceMapService.findAllDetails(query);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.carServiceMapService.findOne(+id);

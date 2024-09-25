@@ -19,6 +19,11 @@ export class CustomerController {
     return this.customerService.findAll(query);
   }
 
+  @Get('/details')
+  findAllDetails(@Query() query:any) {
+    return this.customerService.findAllDetails(query);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.customerService.findOne(+id);

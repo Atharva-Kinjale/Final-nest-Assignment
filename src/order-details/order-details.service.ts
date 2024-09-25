@@ -12,7 +12,9 @@ import { BaseService } from 'src/BaseService';
 export class OrderDetailsService extends BaseService<OrderDetail,CreateOrderDetailDto,UpdateOrderDetailDto> {
   
   constructor(@InjectRepository(OrderDetail) private readonly repo:Repository<OrderDetail> ){
-    super(repo,"order_Id", ['emp',"cust",'car','loc'])
+    // super(repo,"order_Id", ['emp',"cust",'car','loc'])
+    super(repo,"order_Id", ['emp',"cust",'car','loc','payment'])
+
   }
 }
 // ----------------------------------------------------------------------------------------------------------------

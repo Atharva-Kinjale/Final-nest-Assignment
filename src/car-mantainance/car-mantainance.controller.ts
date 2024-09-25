@@ -18,6 +18,11 @@ export class CarMantainanceController {
     return this.carMantainanceService.findAll(query);
   }
 
+  @Get('/details')
+  findAllDeatails(@Query() query:any) {
+    return this.carMantainanceService.findAllDetails(query);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.carMantainanceService.findOne(+id);

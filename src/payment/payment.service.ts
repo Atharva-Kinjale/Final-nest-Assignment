@@ -12,7 +12,9 @@ import { BaseService } from 'src/BaseService';
 export class PaymentService extends BaseService<Payment,CreatePaymentDto,UpdatePaymentDto> {
   
   constructor(@InjectRepository(Payment) private readonly repo:Repository<Payment> ){
+    // super(repo,"payment_Id", ['orderDetails'])
     super(repo,"payment_Id", ['orderDetails'])
+
   }
 }
 

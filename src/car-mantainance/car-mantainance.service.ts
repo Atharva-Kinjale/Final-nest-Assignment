@@ -10,7 +10,9 @@ import { BaseService } from 'src/BaseService';
 export class CarMantainanceService extends BaseService<CarMantainance,CreateCarMantainanceDto,UpdateCarMantainanceDto> {
   
   constructor(@InjectRepository(CarMantainance) private readonly repo:Repository<CarMantainance> ){
+    // super(repo,"service_Id", ['loc'])
     super(repo,"service_Id", ['loc'])
+
   }
 }
 // ----------------------------------------------------------------------------------------------------------------

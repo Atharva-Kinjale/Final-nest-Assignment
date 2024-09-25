@@ -18,6 +18,11 @@ export class PaymentController {
     return this.paymentService.findAll(query);
   }
 
+  @Get('/details')
+  findAllDetails(@Query() query:any) {
+    return this.paymentService.findAllDetails(query);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.paymentService.findOne(+id);

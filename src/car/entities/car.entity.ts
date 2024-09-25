@@ -45,7 +45,7 @@ export class Car {
     @JoinColumn({name:"location"},)
     loc: Location;
 
-    @OneToMany(()=>OrderDetail,(order)=>order.emp)
+    @OneToMany(()=>OrderDetail,(order)=>order.car)
     orderDetails:OrderDetail
 
     @OneToMany(()=>CarServiceMap,(carservicemap)=>carservicemap.car)

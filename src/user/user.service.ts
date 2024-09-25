@@ -8,11 +8,25 @@ import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { BaseService } from 'src/BaseService';
 
-
 @Injectable()
-export class UserService extends BaseService<User,CreateUserDto,UpdateUserDto>{
-  constructor(@InjectRepository(User) private repo:Repository<User>){
-    super(repo,"user_Id", ['location'])
+export class UserService extends BaseService<
+  User,
+  CreateUserDto,
+  UpdateUserDto
+> {
+  constructor(@InjectRepository(User) private repo: Repository<User>) {
+    super(repo, 'user_Id', ['location','employee','customer']);
+  }
+
+  async CustomFind(id, pincod1) {
+    const users = await this.repo.find({
+      where: { user_Id: id, pincode: pincod1 },
+      relations: { location: true },
+    });
+    if (users.length===0) {
+      throw new NotFoundException(` not found`);
+    }
+    return users;
   }
 }
 // ----------------------------------------------------------------------------------------------------------------
@@ -25,7 +39,6 @@ export class UserService extends BaseService<User,CreateUserDto,UpdateUserDto>{
 // import { User } from './entities/user.entity';
 // import { Repository } from 'typeorm';
 
-
 // @Injectable()
 // export class UserService {
 //   constructor(@InjectRepository(User) private userRepo:Repository<User>){}
@@ -34,7 +47,7 @@ export class UserService extends BaseService<User,CreateUserDto,UpdateUserDto>{
 //     let userdata;
 //     try {
 //       console.log("before",createUserDto);
-      
+
 //       userdata= this.userRepo.create(createUserDto);
 //       console.log("after",userdata);
 
@@ -47,18 +60,18 @@ export class UserService extends BaseService<User,CreateUserDto,UpdateUserDto>{
 //   }
 
 //   async findAll() {
-    
+
 //       const users=await this.userRepo.find({
 //         relations:{location:true}
 //         // {Location:true,},
 //       });
-      
+
 //       return users
-    
+
 //   }
 
 //   async findOne(id: number) {
-   
+
 //     const users=await this.userRepo.findOne({where:{user_Id:id},relations:{location:true}})
 //     if (!users) {
 //       throw new NotFoundException(`User with Id ${id} not found`);
