@@ -1,267 +1,131 @@
-
-
-
-
 import { DeepPartial, Repository } from 'typeorm';
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
+const APIFeatures = require("../src/APIFeatures");
 
 @Injectable()
-export class BaseService<T,createDTO extends DeepPartial<T>> {
-  constructor(private readonly repository: Repository<T>,
-   
-    private readonly pincode:string
+export class BaseService<T, createDTO extends DeepPartial<T>,updateDTO extends QueryDeepPartialEntity<T> >{
+  constructor(
+    private readonly repository: Repository<T>,
+    private readonly PK: string,
+    private readonly relations:string[]
   ) {}
+  getEntityname(): string {
+    const EntityName =
+      typeof this.repository.target === 'function'
+        ? this.repository.target.name
+        : this.repository.target;
+    // console.log(this.repository.target);
+
+    return EntityName as string;
+  }
 
   async findAll(query): Promise<T[]> {
-    // return await this.repository.find(query);
-    // filtering
-    const queryObj={...query}
-    const excludedFields = ["page", "sort", "limit", "fields"];
-    excludedFields.forEach((el) => delete queryObj[el]);
-    console.log("req.query", query);
-
-    // sorting
-    let sortOrder = {};
-    if (query.sort) 
-      {
-      let sortBy = query.sort.split(",");
-      console.log(sortBy);
-      
-      sortBy.forEach((el) => {
-        if (el.startsWith("-")) {
-          sortOrder[el.slice(1, el.length)]= "DESC";
-          
-        } else {
-          sortOrder[el.slice(0, el.length)]= "ASC";
-        }
-      });
-    } else {
-      sortOrder ["CreatedAt"]= "DESC";
+    const Features = new APIFeatures(query);
+    // console.log("testing ",Features.filtering());
+  
+    const data = await this.repository.find({
+      where: Features.filtering(),
+      order: Features.Sorting(),
+      select: Features.fieldLimit(),
+      skip: Features.pagination().skip,
+      take: Features.pagination().take,
+      relations:this.relations
+    });
+    if (!data) {
+      throw new NotFoundException(`${this.getEntityname()} not found`);
     }
-    console.log(sortOrder);
-    
-
-    // field Limit
-    let fields;
-    if (query.fields) {
-      fields = query.fields.split(",");
-      console.log(fields);
-    }
-
-
-    // pagination
-    const page = +query.page || 1;
-    const take = +query.limit || 10;
-    const skip = (page - 1) * take;
-
-    console.log(skip,take);
-
-    const location=await this.repository.find(
-      {
-        where:queryObj,
-        order:sortOrder,
-        select: fields,
-        skip:skip,
-        take:take,
-      }
-    );
-    if (!location) {
-      throw new NotFoundException(`Locations not found`);
-    }
-    
-    return location
+    this.getEntityname();
+    return data;
   }
 
   async findOne(id: number) {
-        // return `This action returns a #${id} location`;
-        const location=await this.repository.findOneBy({[this.pincode]:id} as object)
-        if (!location) {
-          throw new NotFoundException(`Location with pincode ${id} not found`);
-        }
-        return location
+    // return `This action returns a #${id} location`;
+    const data = await this.repository.findOne({
+      where:{[this.PK]: id}as object,
+      relations:this.relations} );
+    if (!data) {
+      console.log(this.repository.target);
+
+      throw new NotFoundException(
+        `${this.getEntityname()} with ${this.PK} ${id} not found`,
+      );
+    }
+    return data;
+  }
+
+  async create(createDTO: createDTO) {
+    //     // tnx
+    const queryRunner = this.repository.manager.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    // tnx
+    try {
+      const entry = await this.repository.create(createDTO);
+      const data = await queryRunner.manager.save(entry);
+      await queryRunner.commitTransaction();
+      return data;
+      // return this.repo.save(location);
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw new BadRequestException(
+        `Error creating ${this.getEntityname()}: ` + error.message,
+      );
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  async update(id: number, updateDto: updateDTO) {
+    // tnx
+    const queryRunner = this.repository.manager.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    // tnx
+    try {
+      const entry = await this.findOne(id);
+      if (!entry) {
+        throw new NotFoundException(`${this.getEntityname()} with ${this.PK} ${id} not exiist`);
       }
+      const loc = await queryRunner.manager.update(
+        this.repository.target,
+        id,
+        updateDto as any,
+      );
+      
+      await queryRunner.commitTransaction();
+      return this.findOne( id );
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw new BadRequestException(
+        'Error updating location: ' + error.message,
+      );
+    } finally {
+      await queryRunner.release();
+    }
+  }
 
-  async create(createDTO:createDTO) {
-        //     // tnx
-            const queryRunner =this.repository.manager.connection.createQueryRunner();
-            await queryRunner.connect();
-            await queryRunner.startTransaction();
-            // tnx
-            try{const location=await this.repository.create(createDTO)
-                const op = await queryRunner.manager.save(location);
-        
-              await queryRunner.commitTransaction();
-              return op;
-            // return this.repo.save(location);
+  async remove(id: number) {
+    // return `This action removes a #${id} location`;
+    const queryRunner = this.repository.manager.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+        const result=await queryRunner.manager.softDelete(this.repository.target,id)
+        if (result.affected === 0) {
+          throw new NotFoundException(`${this.getEntityname()} with ${this.PK} ${id} not found`);
         }
-            catch(error){
-                await queryRunner.rollbackTransaction();
-                throw new BadRequestException('Error creating user: ' + error.message);
-              } finally {
-                await queryRunner.release();
-              }
-          }
+        return `${this.PK} #${id} is removed from  ${this.getEntityname()}`
+
+    } catch (error) {
+        await queryRunner.rollbackTransaction();
+        throw new BadRequestException(`Error deleting ${this.getEntityname()}: ` + error.message);
+      } finally {
+        await queryRunner.release();
+      }
+    }
 }
-
-
-
-// --------------------------------------------------------------------------------------------------------------------------
-// import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-// // import { CreateLocationDto } from './dto/create-location.dto';
-// // import { UpdateLocationDto } from './dto/update-location.dto';
-// import { InjectRepository } from '@nestjs/typeorm';
-// import { Repository } from 'typeorm';
-// import { Location } from './location/entities/location.entity';
-// import { CreateLocationDto } from './location/dto/create-location.dto';
-// import { UpdateLocationDto } from './location/dto/update-location.dto';
-
-// @Injectable()
-// export class BasicService <T>{
-//     // repo
-//   constructor(
-//     // repo,
-//     // @InjectRepository(ENTITYNAME) private repo:Repository<ENTITYNAME>
-//     private repo:Repository<T>
-// ){
-//     // this.repo= repo;
-    
-// }
-
-
-// //   async create(createDto: CREATE-ENTITY-DTO) {
-// //     // tnx
-// //     const queryRunner =this.repo.manager.connection.createQueryRunner();
-// //     await queryRunner.connect();
-// //     await queryRunner.startTransaction();
-// //     // tnx
-// //     try{const location=await this.repo.create(createDto)
-// //         const op = await queryRunner.manager.save(location);
-
-// //       await queryRunner.commitTransaction();
-// //       return op;
-// //     // return this.repo.save(location);
-// // }
-// //     catch(error){
-// //         await queryRunner.rollbackTransaction();
-// //         throw new BadRequestException('Error creating user: ' + error.message);
-// //       } finally {
-// //         await queryRunner.release();
-// //       }
-// //   }
-
-//   async findAll(query) {
-//     // // return `This action returns all locations`;
-//     // // filtering
-//     // const queryObj={...query}
-//     // const excludedFields = ["page", "sort", "limit", "fields"];
-//     // excludedFields.forEach((el) => delete queryObj[el]);
-//     // console.log("req.query", query);
-
-//     // // sorting
-//     // let sortOrder = {};
-//     // if (query.sort) 
-//     //   {
-//     //   let sortBy = query.sort.split(",");
-//     //   console.log(sortBy);
-      
-//     //   sortBy.forEach((el) => {
-//     //     if (el.startsWith("-")) {
-//     //       sortOrder[el.slice(1, el.length)]= "DESC";
-          
-//     //     } else {
-//     //       sortOrder[el.slice(0, el.length)]= "ASC";
-//     //     }
-//     //   });
-//     // } else {
-//     //   sortOrder ["CreatedAt"]= "DESC";
-//     // }
-//     // console.log(sortOrder);
-    
-
-//     // // field Limit
-//     // let fields;
-//     // if (query.fields) {
-//     //   fields = query.fields.split(",");
-//     //   console.log(fields);
-//     // }
-
-
-//     // // pagination
-//     // const page = +query.page || 1;
-//     // const take = +query.limit || 10;
-//     // const skip = (page - 1) * take;
-
-//     // console.log(skip,take);
-
-//     const location=await this.repo.find(
-//     //   {
-//     //     // where:queryObj,
-//     //     order:sortOrder,
-//     //     select: fields,
-//     //     skip:skip,
-//     //     take:take,
-//     //   }
-//     );
-//     if (!location) {
-//       throw new NotFoundException(`Locations not found`);
-//     }
-    
-//     return location
-//   }
-
-// //   async findOne(id: number) {
-// //     // return `This action returns a #${id} location`;
-// //     const location=await this.repo.findOneBy({pincode:id})
-// //     if (!location) {
-// //       throw new NotFoundException(`Location with pincode ${id} not found`);
-// //     }
-// //     return location
-// //   }
-
-// //   async update(id: number, updateLocationDto: UpdateLocationDto) {
-// // // tnx
-// // const queryRunner = this.repo.manager.connection.createQueryRunner();
-// // await queryRunner.connect();
-// // await queryRunner.startTransaction();
-// // // tnx
-// // try {
-// //     const location = await this.findOne(id);
-// //     if (!location) {
-// //         throw new NotFoundException(`location with ID ${id} not exiist`);
-// //       }
-// //       const loc=await queryRunner.manager.update(Location,id,updateLocationDto)
-// //       await queryRunner.commitTransaction();
-// //     return  this.repo.findOneBy({pincode :id});
-// // } catch (error) {
-    
-// //     await queryRunner.rollbackTransaction();
-// //     throw new BadRequestException('Error updating location: ' + error.message);
-// //   } finally {
-// //     await queryRunner.release();
-// //   }
-    
-// //   }
-
-// //   async remove(id: number) {
-// //     // return `This action removes a #${id} location`;
-// //     const queryRunner = this.repo.manager.connection.createQueryRunner();
-// //     await queryRunner.connect();
-// //     await queryRunner.startTransaction();
-// //     try {
-// //         const result=await queryRunner.manager.softDelete(Location,id)
-// //         if (result.affected === 0) {
-// //           throw new NotFoundException(`Location with pincode ${id} not found`);
-// //         }
-// //         return `pincode #${id} is removed from  location`
-      
-// //     } catch (error) {
-// //         await queryRunner.rollbackTransaction();
-// //         throw new BadRequestException('Error deleting location: ' + error.message);
-// //       } finally {
-// //         await queryRunner.release();
-// //       }    
-// //     }
-   
-// }
-
-

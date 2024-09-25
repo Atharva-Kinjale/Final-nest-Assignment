@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus, Query } from '@nestjs/common';
 import { CarServiceMapService } from './car-service-map.service';
 import { CreateCarServiceMapDto } from './dto/create-car-service-map.dto';
 import { UpdateCarServiceMapDto } from './dto/update-car-service-map.dto';
+import { query } from 'express';
 
 @Controller('car-service-map')
 export class CarServiceMapController {
@@ -14,8 +15,8 @@ export class CarServiceMapController {
   }
 
   @Get()
-  findAll() {
-    return this.carServiceMapService.findAll();
+  findAll(@Query() query:any) {
+    return this.carServiceMapService.findAll(query);
   }
 
   @Get(':id')

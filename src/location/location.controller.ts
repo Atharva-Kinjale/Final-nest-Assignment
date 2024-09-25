@@ -24,13 +24,13 @@ export class LocationController {
     return this.locationsService.findOne(+pincode);
   }
 
-  // @Patch(':pincode')
-  // update(@Param('pincode') pincode: string, @Body() updateLocationDto: UpdateLocationDto) {
-  //   return this.locationsService.update(+pincode, updateLocationDto);
-  // }
+  @Patch(':pincode')
+  update(@Param('pincode') pincode: string, @Body() updateLocationDto: UpdateLocationDto) {
+    return this.locationsService.update(+pincode, updateLocationDto);
+  }
 
-  // @Delete(':pincode')
-  // remove(@Param('pincode') pincode: string) {
-  //   return this.locationsService.remove(+pincode);
-  // }
+  @Delete(':pincode')
+  remove(@Param('pincode') pincode: string) {
+    return this.locationsService.remove(+pincode);
+  }
 }
