@@ -48,6 +48,12 @@ export class User1727099862476 implements MigrationInterface {
                         isNullable: false,
                     },
                     {
+                        name: 'password',
+                        type: 'varchar',
+                        isNullable:false,
+                        default:`'pass123'`,
+                      },
+                    {
                         name: "CreatedAt",
                         type: "timestamp",
                         default: "CURRENT_TIMESTAMP",

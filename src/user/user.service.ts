@@ -28,6 +28,28 @@ export class UserService extends BaseService<
     }
     return users;
   }
+
+  async findByEmail(email:string){
+    return await this.repo.findOne({where:{Email: email}})
+  }
+
+  // async findOne(id: number) {
+  //   // return `This action returns a #${id} location`;
+  //   const data = await this.repo.findOne({
+  //     where:{user_Id: id}as object,
+  //     relations:['location','employee','customer']} );
+  //   if (!data) {
+  //     console.log(this.repo.target);
+
+  //     throw new NotFoundException(
+  //       `${this.getEntityname()} with user_Id ${id} not found`,
+  //     );
+  //   }
+  //   console.log((data.employee.employeeRole));
+  //   // const emp=data.employee
+    
+  //   return data;
+  // }
 }
 // ----------------------------------------------------------------------------------------------------------------
 // -------------------NORMAL WORKING------------------------

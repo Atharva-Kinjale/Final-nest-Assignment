@@ -82,6 +82,8 @@ export class BaseService<T, createDTO extends DeepPartial<T>,updateDTO extends Q
         `${this.getEntityname()} with ${this.PK} ${id} not found`,
       );
     }
+    console.log(Object.keys(data));
+    
     return data;
   }
 

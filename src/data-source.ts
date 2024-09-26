@@ -7,7 +7,7 @@ export const AppDataSource = new DataSource({
   port: 3306,
   username: 'root',
   password: 'Atharva@123',
-  database: 'connection3',
+  database: 'dummydatabase',
   synchronize: false, // Turn off sync when using migrations
   logging: false,
   entities: [__dirname + '/**/*.entity{.ts,.js}'],

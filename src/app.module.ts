@@ -21,6 +21,9 @@ import { Payment } from './payment/entities/payment.entity';
 import { AppDataSource } from './data-source';
 import { EmployeeServiceMapModule } from './employee-service-map/employee-service-map.module';
 import { CarServiceMapModule } from './car-service-map/car-service-map.module';
+import { AuthModule } from './auth/auth.module';
+import { AuthInfoModule } from './auth-info/auth-info.module';
+
 
 
 
@@ -50,6 +53,8 @@ import { CarServiceMapModule } from './car-service-map/car-service-map.module';
     PaymentModule,
     EmployeeServiceMapModule,
     CarServiceMapModule,
+    AuthModule,
+    AuthInfoModule,
   ],
   controllers: [AppController],
   providers: [AppService],

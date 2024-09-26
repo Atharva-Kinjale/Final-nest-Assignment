@@ -2,7 +2,7 @@
 import { Customer } from "src/customer/entities/customer.entity";
 import { Employee } from "src/employee/entities/employee.entity";
 import { Location } from "src/location/entities/location.entity";
-import { Column, CreateDateColumn, DeleteDateColumn, Entity,  JoinColumn,  ManyToOne,  OneToOne,  PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, DeleteDateColumn, Entity,  JoinColumn,  ManyToOne,  OneToOne,  PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 export enum Gender {
     MALE = 'male',
@@ -10,6 +10,7 @@ export enum Gender {
     OTHER = 'other'
   }
   
+  import * as bcrypt from 'bcryptjs';
 
 @Entity('users')
 export class User {
@@ -37,6 +38,16 @@ export class User {
     @Column({name:"pinCode"})
     pincode:number;
     
+    @Column({nullable:false,default:'pass123'})
+  password: string;
+
+//   @BeforeInsert()
+//   @BeforeUpdate()
+//   async hashPassword() {
+//     if (this.password) {
+//       this.password = await bcrypt.hash(this.password, 10); // 10 is the salt rounds
+//     }
+//   }
     @CreateDateColumn()
     CreatedAt: Date;
 

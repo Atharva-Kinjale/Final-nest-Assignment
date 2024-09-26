@@ -6,6 +6,9 @@ import { Location } from "./entities/location.entity";
 import { Repository } from "typeorm";
 import { CreateLocationDto } from "./dto/create-location.dto";
 import { UpdateLocationDto } from "./dto/update-location.dto";
+import { Injectable } from "@nestjs/common";
+
+@Injectable()
 export class LocationService extends BaseService<Location,CreateLocationDto,UpdateLocationDto> {
   
   constructor(@InjectRepository(Location) private readonly repo:Repository<Location> ){

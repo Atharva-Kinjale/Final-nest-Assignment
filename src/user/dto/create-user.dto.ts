@@ -1,4 +1,4 @@
-import { IsEmail, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, Matches, Max, Min } from "class-validator";
+import { IsEmail, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, Matches, Max, Min, MinLength } from "class-validator";
 import { Gender } from "../entities/user.entity";
 
 export class CreateUserDto {
@@ -34,5 +34,13 @@ export class CreateUserDto {
     @Min(100000)  // Assuming the pincode is a 6-digit number
     @Max(999999)
     pincode: number;
+
+    @IsString()
+    @MinLength(8, { message: 'Password must be at least 8 characters long' })
+    @Matches(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, {
+    message:
+      'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character',
+    })
+    password: string;
 
 }

@@ -59,4 +59,9 @@ export class UserController {
     return request
 
   }
+  @Get('/email')
+  find2(){
+    const email='aaravsharma@gmail.com'
+    return this.userService.findByEmail(email)
+  }
 }
