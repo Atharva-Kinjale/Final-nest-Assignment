@@ -33,6 +33,7 @@ export class User1727099862476 implements MigrationInterface {
                     {
                         name: "Contact_No",
                         type: "varchar",
+                        isUnique: true,
                         isNullable: false,
                     },
                     {

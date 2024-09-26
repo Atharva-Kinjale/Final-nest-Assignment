@@ -5,6 +5,14 @@ import { OrderDetail } from "src/order-details/entities/order-detail.entity";
 import { User } from "src/user/entities/user.entity";
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
+export enum Role {
+  Salesperson = 'Salesperson',
+  Technician = 'Technician',
+  Manager = 'Manager',
+  Mechanic='Mechanic',
+}
+
+
 @Entity({name:"employee"})
 export class Employee {
     @PrimaryGeneratedColumn()
@@ -12,6 +20,14 @@ export class Employee {
   
     @Column({nullable:false,unique:true,name:'user_Id'})
     user_Id: number;
+
+    @Column({nullable:false,
+      type: "enum",
+      enum: Role})
+    employeeRole:Role;
+
+    @Column({nullable:false})
+    salary:number;
 
     @CreateDateColumn()
     CreatedAt: Date; 

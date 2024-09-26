@@ -18,7 +18,7 @@ export class CarMaintainance1727160312573 implements MigrationInterface {
                     {
                         name: "serviceName",
                         type: "varchar",
-                        isUnique: true,
+                        
                     },
                     {
                         name: "timeRequired",

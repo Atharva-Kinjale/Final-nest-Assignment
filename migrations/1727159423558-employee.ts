@@ -21,6 +21,17 @@ export class Employee1727159423558 implements MigrationInterface {
                         isNullable: false,
                     },
                     {
+                        name: "employeeRole",
+                        type: "enum",
+                        enum:['Salesperson' ,'Technician','Manager','Mechanic'],
+                        isNullable: false,
+                    },
+                    {
+                        name: "salary",
+                        type: "decimal",
+                        isNullable: false,
+                    },
+                    {
                         name: "CreatedAt",
                         type: "timestamp",
                         default: "CURRENT_TIMESTAMP",
